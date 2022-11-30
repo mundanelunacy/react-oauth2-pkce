@@ -43,6 +43,7 @@ export const AuthProvider = ({ authConfig, children }: IAuthProvider) => {
   const [idToken, setIdToken] = useLocalStorage<string | undefined>('ROCP_idToken', undefined)
   const [loginInProgress, setLoginInProgress] = useLocalStorage<boolean>('ROCP_loginInProgress', false)
   const [tokenData, setTokenData] = useState<TTokenData | undefined>()
+  // TODO: Breaking change in v2 'error: Error'
   const [error, setError] = useState<string | null>(null)
 
   let interval: any
@@ -114,11 +115,12 @@ export const AuthProvider = ({ authConfig, children }: IAuthProvider) => {
       if (refreshToken && !epochTimeIsPast(refreshTokenExpire)) {
         fetchWithRefreshToken({ config, refreshToken })
           .then((result: TTokenResponse) => handleTokenResponse(result))
-          .catch((error: Error) => {
+          .catch((error: unknown) => {
             console.error(error)
-            setError(error.message)
-            if (initial) login() // If the attempt to get a new token failed during page load, do a full login.
-            if (errorMessageForExpiredRefreshToken(error.message)) {
+            setError((error as Error).message)
+            if (initial) return login() // If the attempt to get a new token failed during page load, do a full login.
+
+            if (errorMessageForExpiredRefreshToken((error as Error).message)) {
               if (onRefreshTokenExpire) onRefreshTokenExpire({ login } as TRefreshTokenExpiredEvent)
             }
           })
@@ -133,7 +135,7 @@ export const AuthProvider = ({ authConfig, children }: IAuthProvider) => {
 
   // Register the 'check for soon expiring access token' interval (Every minute)
   useEffect(() => {
-    interval = setInterval(() => refreshAccessToken(), 60000) // eslint-disable-line
+    interval = setInterval(() => refreshAccessToken(), 1000) // eslint-disable-line
     return () => clearInterval(interval)
   }, [token]) // This token dependency removes the old, and registers a new Interval when a new token is fetched.
 
@@ -158,8 +160,8 @@ export const AuthProvider = ({ authConfig, children }: IAuthProvider) => {
             // Call any postLogin function in authConfig
             if (config?.postLogin) config.postLogin()
           })
-          .catch((error: string) => {
-            setError(error)
+          .catch((error: unknown) => {
+            setError((error as Error).message)
           })
       }
     } else if (!token) {

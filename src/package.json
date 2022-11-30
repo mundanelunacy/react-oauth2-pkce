@@ -31,7 +31,8 @@
     "keycloak",
     "microsoft",
     "google",
-    "fusionauth"
+    "fusionauth",
+    "wso2"
   ],
   "author": "Stig Oskar Ofstad",
   "license": "MIT",

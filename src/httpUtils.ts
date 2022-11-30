@@ -16,7 +16,7 @@ export function postWithXForm(url: string, request: TTokenRequest): Promise<Resp
   }).then((response: Response) => {
     if (!response.ok) {
       console.error(response)
-      throw Error(response.statusText)
+      throw Error()
     }
     return response
   })
