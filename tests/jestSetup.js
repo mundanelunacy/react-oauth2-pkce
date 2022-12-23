@@ -1,3 +1,4 @@
+require('@testing-library/jest-dom/extend-expect')
 const { TextDecoder, TextEncoder } = require('util')
 const nodeCrypto = require('crypto')
 

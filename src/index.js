@@ -13,6 +13,8 @@ const authConfig = {
     window.confirm('Tokens have expired. Refresh page to continue using the site?') && event.login(),
   decodeToken: true,
   scope: 'User.read OpenId',
+  extraLogoutParameters: { test: 123, another: 'hallo' },
+  logoutEndpoint: 'https://login.microsoftonline.com/d422398d-b6a5-454d-a202-7ed4c1bec457/oauth2/v2.0/logout',
   autoLogin: false,
 }
 
