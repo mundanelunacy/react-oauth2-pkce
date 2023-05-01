@@ -6,7 +6,7 @@
 
 import React, { useContext } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AuthContext, AuthProvider } from './AuthContext'
+import { AuthContext, AuthProvider } from 'react-oauth2-code-pkce'
 
 // Get auth provider info from "https://keycloak.ofstad.xyz/realms/master/.well-known/openid-configuration"
 const authConfig = {
